@@ -13,6 +13,7 @@ import MongoStore from "connect-mongo"
 import UserManager from "./controllers/UserManager.js"
 import CartManager from "./controllers/CartManager.js"
 import { generateToken } from "./jwt/token.js"
+import config from "./config.js"
 
 const users = new UserManager()
 const carts = new CartManager()
@@ -104,7 +105,7 @@ app.get("/current", passportCall("jwt"), authorization("user"),(req,res)=>{
 
 app.listen(PORT,()=>{console.log("Escuchando en puerto 8080")})
 
-mongoose.connect("mongodb+srv://cristinasalazar125:m123456789@cluster0.tomc32z.mongodb.net/?retryWrites=true&w=majority")
+mongoose.connect(MONGO_URL)
 .then(()=>{
     console.log("Conectado a la base de datos")
 })
