@@ -10,8 +10,8 @@ import * as path from "path"
 import __dirname, {authorization, passportCall} from "./utils.js"
 import initializePassport from "./config/passport.config.js"
 import MongoStore from "connect-mongo"
-import UserManager from "./controllers/UserManager.js"
-import CartManager from "./controllers/CartManager.js"
+import UserManager from "./dao/UserManager.js"
+import CartManager from "./dao/CartManager.js"
 import { generateToken } from "./jwt/token.js"
 import config from "./config.js"
 
@@ -19,17 +19,32 @@ const users = new UserManager()
 const carts = new CartManager()
 const app = express()
 
-const PORT = 8080
+const PORT = config.port
 
-app.use(session({
+mongoose
+  .connect(
+    config.mongoUrl,
+    { useNewUrlParser: true, useUnifiedTopology: true }
+  )
+  .then(() => {
+    console.log("Conección exitosa");
+  })
+  .catch((error) => {
+    console.error("No logró conectarse" + error);
+  });
+
+app.use(
+  session({
     store: MongoStore.create({
-        mongoUrl: "mongodb+srv://cristinasalazar125:m123456789@cluster0.tomc32z.mongodb.net/?retryWrites=true&w=majority",
-        mongoOptions: {useNewUrlParser: true, useUnifiedTopology:true}, ttl: 3600
+      mongoUrl:
+        config.mongoUrl,
+      ttl: 3600,
     }),
-    secret: "ClaveSecreta",
+    secret: "clave",
     resave: false,
     saveUninitialized: false,
-}))
+  })
+);
 
 const jwtOptions = {
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -105,11 +120,5 @@ app.get("/current", passportCall("jwt"), authorization("user"),(req,res)=>{
 
 app.listen(PORT,()=>{console.log("Escuchando en puerto 8080")})
 
-mongoose.connect(MONGO_URL)
-.then(()=>{
-    console.log("Conectado a la base de datos")
-})
-.catch(error => {
-    console.error("Error al conectarse a la base de datos" + error)
-})
+
 
