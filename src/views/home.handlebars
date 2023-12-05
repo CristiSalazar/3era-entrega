@@ -1,0 +1,47 @@
+<h1>Home usuario</h1>
+<button id="logoutButton">Cerrar Sesión</button>
+<div>
+    <div>
+        <h1>Lista de Productos</h1>
+        <div>
+            <div id="productsContainer">
+                <ul>
+                    {{#each products}}
+                    <li>
+                        Description: {{this.description}}<br>
+                        Price: ${{this.price}}<br>
+                        Stock: {{this.stock}}<br>
+                        <button>Agregar</button>
+                    </li>
+                    {{/each}}
+                </ul>
+
+            </div>
+        </div>
+    </div>
+    <div>
+        <h1>Formulario Contacto</h1>
+        <form id="email-form">
+            <input type="hidden" id="productId" name="productId">
+            <div>
+                <div>
+                    <input type="email" id="email" placeholder="Correo" required>
+                </div>
+                <div>
+                    <textarea id="com" placeholder="Comentario"></textarea>
+                </div>
+            </div>
+            <div>
+                <button type="submit" id="btnCorreo">Enviar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>  
+    document.getElementById('logoutButton').addEventListener('click', cerrarSesion);
+    function cerrarSesion() {
+        localStorage.removeItem("token");
+        window.location.href = '/';
+    }
+</script>

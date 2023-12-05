@@ -1,0 +1,68 @@
+<h1>Home de Admin</h1>
+<div>
+    <button id="logoutButton">Cerrar Sesión</button>
+    <div>
+        <h1>Lista de Productos con Handlebars</h1>
+        <div class="detalleProd">
+            <div id="productsContainer">
+                <ul>
+                    {{#each products}}
+                    <li data-description="{{this.description}}" data-price="{{this.price}}" 
+                    data-stock="{{this.stock}}" data-id="{{this._id}}">
+                        <strong>{{this.description}}</strong><br>
+                        Price: ${{this.price}}<br>
+                        Stock: {{this.stock}}<br>
+                        ID:{{this._id}}<br>
+                    </li>
+                    {{/each}}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="formulario">
+        <h1>Formulario Productos</h1>
+        <form id="prod-form">
+            <input type="hidden" id="productId" name="productId">
+            <div>
+                <div>
+                    <input type="text" id="desc" placeholder="Ingrese Descripción" required>
+                    <input type="number" id="price" placeholder="Ingrese Precio" required>
+                </div>
+                <div>
+                    <input type="number" id="stock" placeholder="Ingrese Stock" required>
+                        <option value="in_stock" selected="true">Con Stock</option>
+                        <option value="out_stock">Sin Stock</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    document.getElementById('logoutButton').addEventListener('click', cerrarSesion);
+    function cerrarSesion() {
+        localStorage.removeItem("token");
+        window.location.href = '/';
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+        const productsList = document.getElementById("productsContainer");
+        const descInput = document.getElementById("desc");
+        const priceInput = document.getElementById("price");
+        const stockInput = document.getElementById("stock");
+
+        productsList.addEventListener("click", function (event) {
+            const clickedElement = event.target;
+            if (clickedElement.tagName === "LI") {
+                const description = clickedElement.getAttribute("data-description");
+                const price = clickedElement.getAttribute("data-price");
+                const stock = clickedElement.getAttribute("data-stock");
+
+                descInput.value = description;
+                priceInput.value = price;
+                stockInput.value = stock;
+            }
+        });
+    });
+</script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/realTimeProducts.js"></script>
